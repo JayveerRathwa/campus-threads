@@ -91,13 +91,8 @@ const UserHeader = ({ user }) => {
 			<Flex w={"full"} justifyContent={"space-between"}>
 				<Flex gap={2} alignItems={"center"}>
 					<Text color={"gray.500"}>{user.followers.length} followers</Text>
-					<Box w='1' h='1' bg={"gray.500"} borderRadius={"full"}></Box>
-					<Link color={"gray.500"}>instagram.com</Link>
 				</Flex>
 				<Flex>
-					<Box className='icon-container'>
-						<BsInstagram size={24} cursor={"pointer"} />
-					</Box>
 					<Box className='icon-container'>
 						<Menu>
 							<MenuButton>
