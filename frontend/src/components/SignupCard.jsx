@@ -20,7 +20,7 @@ import {
   import authScreenAtom from "../atoms/authAtom";
   import useShowToast from "../hooks/useShowToast";
   import userAtom from "../atoms/userAtom";
-  import UniversityAutoComplete from "./UniversityAutoComplete";
+//   import UniversityAutoComplete from "./UniversityAutoComplete";
   
   const FormInput = ({ label, type, value, onChange, isRequired, showPassword, onTogglePassword }) => (
 	<FormControl isRequired={isRequired}>
@@ -53,7 +53,7 @@ import {
 	  university: "",
 	});
   
-	const [isUniversityValid, setIsUniversityValid] = useState(false);
+	// const [isUniversityValid, setIsUniversityValid] = useState(false);
 	const showToast = useShowToast();
 	const setUser = useSetRecoilState(userAtom);
   
@@ -115,17 +115,25 @@ import {
 				  />
 				</Box>
 			  </HStack>
-			  <UniversityAutoComplete
+			  <FormInput
+				label="University"
+				type="text"
+				value={inputs.university}
+				onChange={(e) => setInputs({ ...inputs, university: e.target.value })}
+				isRequired
+			  />
+
+			  {/* <UniversityAutoComplete
 				value={inputs.university}
 				onChange={(val) => setInputs({ ...inputs, university: val })}
 				isRequired
 				setIsValid={setIsUniversityValid} 
-			  />
-			  {!isUniversityValid && inputs.university && (
+			  /> */}
+			  {/* {!isUniversityValid && inputs.university && (
 				<Text color="red.500" fontSize="sm">
 				  Please select a valid university from the list.
 				</Text>
-			  )}
+			  )} */}
 			  <FormInput
 				label="Email address"
 				type="email"

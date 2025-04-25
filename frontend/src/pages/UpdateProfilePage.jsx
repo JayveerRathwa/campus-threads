@@ -17,7 +17,7 @@ import {
   import usePreviewImg from "../hooks/usePreviewImg";
   import useShowToast from "../hooks/useShowToast";
   import { useNavigate } from "react-router-dom";
-  import UniversityAutoComplete from "../components/UniversityAutoComplete";
+//   import UniversityAutoComplete from "../components/UniversityAutoComplete";
   
   export default function UpdateProfilePage() {
 	const [user, setUser] = useRecoilState(userAtom);
@@ -31,7 +31,7 @@ import {
 	});
 	const fileRef = useRef(null);
 	const [updating, setUpdating] = useState(false);
-	const [isUniversityValid, setIsUniversityValid] = useState(true);
+	// const [isUniversityValid, setIsUniversityValid] = useState(true);
   
 	const showToast = useShowToast();
 	const navigate = useNavigate();
@@ -41,10 +41,10 @@ import {
 	  e.preventDefault();
 	  if (updating) return;
   
-	  if (!isUniversityValid) {
-		showToast("Error", "Please select a valid university from the list.", "error");
-		return;
-	  }
+	//   if (!isUniversityValid) {
+	// 	showToast("Error", "Please select a valid university from the list.", "error");
+	// 	return;
+	//   }
   
 	  setUpdating(true);
 	  try {
@@ -117,7 +117,7 @@ import {
 			<FormControl id="name">
 			  <FormLabel>Full name</FormLabel>
 			  <Input
-				placeholder="John Doe"
+				placeholder="name"
 				value={inputs.name}
 				onChange={(e) =>
 				  setInputs({ ...inputs, name: e.target.value })
@@ -129,7 +129,7 @@ import {
 			<FormControl id="username">
 			  <FormLabel>Username</FormLabel>
 			  <Input
-				placeholder="johndoe"
+				placeholder="username"
 				value={inputs.username}
 				onChange={(e) =>
 				  setInputs({ ...inputs, username: e.target.value })
@@ -161,8 +161,20 @@ import {
 				type="text"
 			  />
 			</FormControl>
-  
-			<UniversityAutoComplete
+
+			<FormControl id="university">
+			  <FormLabel>University</FormLabel>
+			  <Input
+				placeholder="university"
+				value={inputs.university}
+				onChange={(e) =>
+				  setInputs({ ...inputs, university: e.target.value })
+				}
+				type="text"
+			  />
+			</FormControl>
+
+			{/* <UniversityAutoComplete
 			  value={inputs.university}
 			  onChange={(uni) => {
 				setInputs({ ...inputs, university: uni });
@@ -174,7 +186,7 @@ import {
 			  <Text color="red.500" fontSize="sm">
 				Please select a valid university from the list.
 			  </Text>
-			)}
+			)} */}
   
 			<FormControl id="password">
 			  <FormLabel>Password</FormLabel>

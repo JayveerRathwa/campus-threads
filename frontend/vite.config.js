@@ -12,11 +12,6 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
-      "/universities": {
-        target: "https://universities.hipolabs.com", // external university API
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/universities/, "/search"), // API path
-      },
     },
   },
 });
