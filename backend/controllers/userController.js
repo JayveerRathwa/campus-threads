@@ -32,7 +32,7 @@ const getUserProfile = async (req, res) => {
 
 const signupUser = async (req, res) => {
 	try {
-		const { name, email, username, password } = req.body;
+		const { name, email, username, university, password, } = req.body;
 		const user = await User.findOne({ $or: [{ email }, { username }] });
 
 		if (user) {
@@ -45,6 +45,7 @@ const signupUser = async (req, res) => {
 			name,
 			email,
 			username,
+			university,
 			password: hashedPassword,
 		});
 		await newUser.save();
@@ -55,6 +56,7 @@ const signupUser = async (req, res) => {
 			res.status(201).json({
 				_id: newUser._id,
 				name: newUser.name,
+				university: newUser.university,
 				email: newUser.email,
 				username: newUser.username,
 				bio: newUser.bio,
@@ -87,6 +89,7 @@ const loginUser = async (req, res) => {
 		res.status(200).json({
 			_id: user._id,
 			name: user.name,
+			university: user.university,
 			email: user.email,
 			username: user.username,
 			bio: user.bio,
@@ -139,7 +142,7 @@ const followUnFollowUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-	const { name, email, username, password, bio } = req.body;
+	const { name, email, university, username, password, bio } = req.body;
 	let { profilePic } = req.body;
 
 	const userId = req.user._id;
@@ -167,6 +170,7 @@ const updateUser = async (req, res) => {
 
 		user.name = name || user.name;
 		user.email = email || user.email;
+		user.university = university || user.university;
 		user.username = username || user.username;
 		user.profilePic = profilePic || user.profilePic;
 		user.bio = bio || user.bio;

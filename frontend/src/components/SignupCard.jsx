@@ -20,6 +20,7 @@ import {
   import authScreenAtom from "../atoms/authAtom";
   import useShowToast from "../hooks/useShowToast";
   import userAtom from "../atoms/userAtom";
+  import UniversityAutoComplete from "./UniversityAutoComplete";
   
   const FormInput = ({ label, type, value, onChange, isRequired, showPassword, onTogglePassword }) => (
 	<FormControl isRequired={isRequired}>
@@ -49,6 +50,7 @@ import {
 	  username: "",
 	  email: "",
 	  password: "",
+	  university: "",
 	});
   
 	const showToast = useShowToast();
@@ -112,6 +114,11 @@ import {
 				  />
 				</Box>
 			  </HStack>
+			  <UniversityAutoComplete
+				value={inputs.university}
+				onChange={(val) => setInputs({ ...inputs, university: val })}
+				isRequired
+			  />
 			  <FormInput
 				label="Email address"
 				type="email"
