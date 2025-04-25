@@ -160,7 +160,7 @@ import {
 					bg: useColorModeValue("gray.700", "gray.800"),
 				  }}
 				  onClick={handleSignup}
-				  isDisabled={!inputs.name || !inputs.username || !inputs.email || !inputs.password || !isUniversityValid} // Disable button if any field is missing or university is invalid
+				  isDisabled={!inputs.name || !inputs.username || !inputs.email || !inputs.password}
 				>
 				  Sign up
 				</Button>
@@ -172,7 +172,7 @@ import {
 					Login
 				  </Link>
 				</Text>
-			  </Stack>
+			 </Stack>
 			</Stack>
 		  </Box>
 		</Stack>
