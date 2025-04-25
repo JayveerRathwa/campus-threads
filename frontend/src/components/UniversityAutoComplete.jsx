@@ -10,7 +10,13 @@ import {
   import { useEffect, useState } from "react";
   import debounce from "lodash.debounce";
   
-  const UniversityAutoComplete = ({ label = "University", value, onChange, isRequired }) => {
+  const UniversityAutoComplete = ({
+    label = "University",
+    value,
+    onChange,
+    isRequired,
+    setIsValid, // ✅ add this
+  }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -24,6 +30,10 @@ import {
         const names = [...new Set(data.map((uni) => uni.name))];
         setSuggestions(names);
         setShowSuggestions(true);
+  
+        if (setIsValid) {
+          setIsValid(names.includes(query));
+        }
       } catch (err) {
         console.error("Failed to fetch universities", err);
       } finally {
@@ -37,6 +47,21 @@ import {
       };
     }, []);
   
+    const handleInputChange = (input) => {
+      onChange(input);
+      if (input.length > 1) {
+        fetchUniversities(input);
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        if (setIsValid) setIsValid(false);
+      }
+  
+      if (setIsValid) {
+        setIsValid(suggestions.includes(input));
+      }
+    };
+  
     return (
       <FormControl isRequired={isRequired} position="relative">
         <FormLabel>{label}</FormLabel>
@@ -44,16 +69,7 @@ import {
           <Input
             type="text"
             value={value}
-            onChange={(e) => {
-              const input = e.target.value;
-              onChange(input);
-              if (input.length > 1) {
-                fetchUniversities(input);
-              } else {
-                setSuggestions([]);
-                setShowSuggestions(false);
-              }
-            }}
+            onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => {
               if (value) setShowSuggestions(true);
             }}
@@ -66,7 +82,7 @@ import {
           )}
         </InputGroup>
   
-        {showSuggestions && suggestions.length > 0 && (
+        {showSuggestions && (
           <Box
             border="1px solid"
             borderColor="gray.300"
@@ -79,20 +95,27 @@ import {
             position="absolute"
             w="100%"
           >
-            {suggestions.map((uni, idx) => (
-              <Box
-                key={idx}
-                px={4}
-                py={2}
-                _hover={{ bg: useColorModeValue("gray.100", "gray.600"), cursor: "pointer" }}
-                onClick={() => {
-                  onChange(uni);
-                  setShowSuggestions(false);
-                }}
-              >
-                {uni}
+            {suggestions.length > 0 ? (
+              suggestions.map((uni, idx) => (
+                <Box
+                  key={idx}
+                  px={4}
+                  py={2}
+                  _hover={{ bg: useColorModeValue("gray.100", "gray.600"), cursor: "pointer" }}
+                  onClick={() => {
+                    onChange(uni);
+                    if (setIsValid) setIsValid(true);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  {uni}
+                </Box>
+              ))
+            ) : (
+              <Box px={4} py={2} color="gray.500">
+                No results found
               </Box>
-            ))}
+            )}
           </Box>
         )}
       </FormControl>

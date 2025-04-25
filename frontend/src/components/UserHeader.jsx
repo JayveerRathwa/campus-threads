@@ -51,6 +51,11 @@ const UserHeader = ({ user }) => {
 							threads.net
 						</Text>
 					</Flex>
+					{user.university && (
+						<Text fontSize={"sm"} color={"gray.400"}>
+							{user.university}
+						</Text>
+					)}
 				</Box>
 				<Box>
 					{user.profilePic && (

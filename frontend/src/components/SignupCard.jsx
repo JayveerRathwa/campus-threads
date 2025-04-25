@@ -53,6 +53,7 @@ import {
 	  university: "",
 	});
   
+	const [isUniversityValid, setIsUniversityValid] = useState(false);
 	const showToast = useShowToast();
 	const setUser = useSetRecoilState(userAtom);
   
@@ -89,7 +90,7 @@ import {
 		  </Stack>
 		  <Box
 			rounded={"lg"}
-			bg={useColorModeValue("white", "gray.800")} 
+			bg={useColorModeValue("white", "gray.800")}
 			boxShadow={"lg"}
 			p={8}
 		  >
@@ -118,7 +119,13 @@ import {
 				value={inputs.university}
 				onChange={(val) => setInputs({ ...inputs, university: val })}
 				isRequired
+				setIsValid={setIsUniversityValid} 
 			  />
+			  {!isUniversityValid && inputs.university && (
+				<Text color="red.500" fontSize="sm">
+				  Please select a valid university from the list.
+				</Text>
+			  )}
 			  <FormInput
 				label="Email address"
 				type="email"
@@ -145,6 +152,7 @@ import {
 					bg: useColorModeValue("gray.700", "gray.800"),
 				  }}
 				  onClick={handleSignup}
+				  isDisabled={!inputs.name || !inputs.username || !inputs.email || !inputs.password || !isUniversityValid} // Disable button if any field is missing or university is invalid
 				>
 				  Sign up
 				</Button>
