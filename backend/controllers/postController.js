@@ -193,4 +193,21 @@ const getUserPosts = async (req, res) => {
 	}
 };
 
-export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getFeedPosts, getUserPosts };
+const getUserReplies = async (req, res) => {
+	const { username } = req.params;
+	try {
+	  const user = await User.findOne({ username });
+	  if (!user) {
+		return res.status(404).json({ error: "User not found" });
+	  }
+  
+	  // Find posts where the user has replied
+	  const postsWithReplies = await Post.find({ 'replies.userId': user._id }).sort({ createdAt: -1 });
+  
+	  res.status(200).json(postsWithReplies);
+	} catch (error) {
+	  res.status(500).json({ error: error.message });
+	}
+};  
+
+export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getFeedPosts, getUserPosts, getUserReplies };

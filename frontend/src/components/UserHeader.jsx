@@ -19,7 +19,7 @@ import userAtom from "../atoms/userAtom";
 import { Link as RouterLink } from "react-router-dom";
 import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
-const UserHeader = ({ user }) => {
+const UserHeader = ({ user, onTabChange, activeTab }) => {
 	const toast = useToast();
 	const currentUser = useRecoilValue(userAtom); // logged in user
 	const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
@@ -35,6 +35,22 @@ const UserHeader = ({ user }) => {
 				isClosable: true,
 			});
 		});
+	};
+
+	const activeTabStyle = {
+		fontWeight: "bold",
+		borderBottom: "2px solid blue", 
+		color: "blue",
+	};
+
+	const inactiveTabStyle = {
+		fontWeight: "normal",
+		borderBottom: "none",
+		color: "gray.500",
+	};
+
+	const handleTabClick = (tabName) => {
+		onTabChange(tabName);
 	};
 
 	return (
@@ -117,20 +133,22 @@ const UserHeader = ({ user }) => {
 			<Flex w={"full"}>
 				<Flex 
 					flex={1} 
-					borderBottom={"1.5px solid white"} 
 					justifyContent={"center"} 
 					pb='3' 
 					cursor={"pointer"}
+					onClick={() => handleTabClick("threads")} 
+					style={activeTab === "threads" ? activeTabStyle : inactiveTabStyle}
 				>
 					<Text fontWeight={"bold"}> Threads</Text>
 				</Flex>
 				<Flex
 					flex={1}
-					borderBottom={"1px solid gray"}
 					justifyContent={"center"}
 					color={"gray.500"}
 					pb='3'
 					cursor={"pointer"}
+					onClick={() => handleTabClick("replies")} 
+					style={activeTab === "replies" ? activeTabStyle : inactiveTabStyle}
 				>
 					<Text fontWeight={"bold"}> Replies</Text>
 				</Flex>

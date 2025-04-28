@@ -15,13 +15,18 @@ const UserPage = () => {
 	const { user, loading } = useGetUserProfile();
 	const [posts, setPosts] = useRecoilState(postsAtom);
 	const [fetchingPosts, setFetchingPosts] = useState(true);
+	const [tab, setTab] = useState("threads");
 
 	useEffect(() => {
 		const getPosts = async () => {
 			if (!user) return;
 			setFetchingPosts(true);
 			try {
-				const res = await fetch(`/api/posts/user/${username}`);
+				const endpoint = tab === "threads" 
+					? `/api/posts/user/${username}` 
+					: `/api/posts/user/replies/${username}`;
+
+				const res = await fetch(endpoint);
 				const data = await res.json();
 
 				if (data.error) {
@@ -38,7 +43,7 @@ const UserPage = () => {
 		};
 
 		getPosts();
-	}, [username, user, showToast, setPosts]);
+	}, [username, user, showToast, tab, setPosts]);
 
 	if (!user && loading) {
 		return (
@@ -60,7 +65,7 @@ const UserPage = () => {
 
 	return (
 		<>
-			<UserHeader user={user} />
+			<UserHeader user={user} onTabChange={setTab} activeTab={tab} />
 
 			{fetchingPosts ? (
 				<Flex justifyContent={"center"} my={12}>
