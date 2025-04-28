@@ -12,6 +12,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseBu
 
 const Post = ({ post, postedBy }) => {
   const [user, setUser] = useState(null);
+  const [sentiment, setSentiment] = useState(null);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const showToast = useShowToast();
   const currentUser = useRecoilValue(userAtom);
@@ -34,8 +35,23 @@ const Post = ({ post, postedBy }) => {
       }
     };
 
+    const getPostDetails = async () => {
+      try {
+        const res = await fetch(`/api/posts/${post._id}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        setSentiment(data.sentiment);  // Assuming sentiment is included in the post data from the backend
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }
+    };
+
     getUser();
-  }, [postedBy, showToast]);
+    getPostDetails();
+  }, [postedBy, post._id, showToast]);
 
   const handleDeletePost = async () => {
     try {
@@ -115,6 +131,11 @@ const Post = ({ post, postedBy }) => {
             </Flex>
 
             <Text fontSize={"sm"}>{post.text}</Text>
+            {sentiment && (
+              <Text fontSize={"xs"} color={sentiment === "happy" ? "green.500" : sentiment === "sad" ? "yellow.500" : sentiment === "angry" ? "red.500" : "gray.500"}>
+                Sentiment: {sentiment}
+              </Text>
+            )}
             {post.img && (
               <Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.300"}>
                 <Image src={post.img} w={"full"} />

@@ -69,6 +69,15 @@ const PostPage = () => {
 	if (!currentPost) return null;
 	console.log("currentPost", currentPost);
 
+	const sentimentColor =
+		currentPost.sentiment === "happy"
+			? "green.500"
+			: currentPost.sentiment === "sad"
+			? "yellow.500"
+			: currentPost.sentiment === "angry"
+			? "red.500"
+			: "gray.500";
+
 	return (
 		<>
 			<Flex>
@@ -93,6 +102,11 @@ const PostPage = () => {
 			</Flex>
 
 			<Text my={3}>{currentPost.text}</Text>
+
+			{/* Display Sentiment */}
+			<Text fontSize={"sm"} color={sentimentColor} fontWeight={"bold"} mt={2}>
+				Sentiment: {currentPost.sentiment.charAt(0).toUpperCase() + currentPost.sentiment.slice(1)}
+			</Text>
 
 			{currentPost.img && (
 				<Box borderRadius={6} overflow={"hidden"} border={"1px solid"} borderColor={"gray.light"}>

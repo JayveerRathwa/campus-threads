@@ -14,6 +14,11 @@ const postSchema = mongoose.Schema(
 		img: {
 			type: String,
 		},
+		sentiment: {
+			type: String,
+			enum: ["happy", "sad", "angry", "emotional"],
+			default: "emotional",
+		},
 		likes: {
 			// array of user ids
 			type: [mongoose.Schema.Types.ObjectId],

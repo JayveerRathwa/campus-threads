@@ -30,7 +30,32 @@ const createPost = async (req, res) => {
 			img = uploadedResponse.secure_url;
 		}
 
-		const newPost = new Post({ postedBy, text, img });
+		const fetch = await import('node-fetch');
+		const HF_TOKEN = process.env.HUGGINGFACE_TOKEN;
+		const HF_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
+
+		const response = await fetch.default(HF_URL, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			...(HF_TOKEN && { Authorization: `Bearer ${HF_TOKEN}` }),
+		},
+		body: JSON.stringify({ inputs: text }),
+		});
+
+		const result = await response.json();
+
+		const arr = Array.isArray(result) ? result : result[0];
+		const label = arr[0]?.label ?? arr[0][0]?.label ?? "EMOTIONAL";
+
+		let sentiment = "emotional";
+		if (label === "POSITIVE") sentiment = "happy";
+		else if (label === "NEGATIVE") sentiment = "sad";
+		if (
+		/angry|furious|mad|rage|outraged|enraged|irritated|pissed/i.test(text)
+		) sentiment = "angry";
+
+		const newPost = new Post({ postedBy, text, img, sentiment });
 		await newPost.save();
 
 		res.status(201).json(newPost);
@@ -144,7 +169,7 @@ const getFeedPosts = async (req, res) => {
 
 		const following = user.following;
 
-		const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+		const feedPosts = await Post.find({ postedBy: { $in: [...following, userId] } }).sort({ createdAt: -1 });
 
 		res.status(200).json(feedPosts);
 	} catch (err) {

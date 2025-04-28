@@ -13,7 +13,6 @@ import {
 	Portal,
 	useToast,
   } from '@chakra-ui/react';  
-import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
