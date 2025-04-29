@@ -32,7 +32,7 @@ const createPost = async (req, res) => {
 
 		const fetch = await import('node-fetch');
 		const HF_TOKEN = process.env.HUGGINGFACE_TOKEN;
-		const HF_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
+		const HF_URL = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment-latest";
 
 		const response = await fetch.default(HF_URL, {
 		method: "POST",
@@ -43,17 +43,27 @@ const createPost = async (req, res) => {
 		body: JSON.stringify({ inputs: text }),
 		});
 
+		if (!response.ok) {
+			const errorText = await response.text(); 
+			throw new Error(`Hugging Face API error ${response.status}: ${errorText}`);
+		}
+
 		const result = await response.json();
 
-		const arr = Array.isArray(result) ? result : result[0];
-		const label = arr[0]?.label ?? arr[0][0]?.label ?? "EMOTIONAL";
+		let arr = Array.isArray(result) ? result : result[0];
+		if (Array.isArray(arr[0])) arr = arr[0];
+
+		const top = arr.reduce((a, b) => (a.score > b.score ? a : b), arr[0]);
+		const labelValue = top?.label ?? "";
 
 		let sentiment = "emotional";
-		if (label === "POSITIVE") sentiment = "happy";
-		else if (label === "NEGATIVE") sentiment = "sad";
-		if (
-		/angry|furious|mad|rage|outraged|enraged|irritated|pissed/i.test(text)
-		) sentiment = "angry";
+		if (labelValue === "LABEL_2" || /positive/i.test(labelValue)) sentiment = "happy";
+		else if (labelValue === "LABEL_0" || /negative/i.test(labelValue)) sentiment = "sad";
+		else if (labelValue === "LABEL_1" || /neutral/i.test(labelValue)) sentiment = "emotional";
+
+		if (/angry|furious|mad|rage|outraged|enraged|irritated|pissed/i.test(text)) {
+			sentiment = "angry";
+		}
 
 		const newPost = new Post({ postedBy, text, img, sentiment });
 		await newPost.save();
