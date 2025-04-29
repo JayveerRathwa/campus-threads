@@ -16,8 +16,8 @@ const postSchema = mongoose.Schema(
 		},
 		sentiment: {
 			type: String,
-			enum: ["happy", "sad", "angry", "emotional"],
-			default: "emotional",
+			enum: ["happy", "sad", "angry", "uncertain"],
+			default: "uncertain",
 		},
 		likes: {
 			// array of user ids

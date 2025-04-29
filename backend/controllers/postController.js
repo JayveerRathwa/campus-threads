@@ -56,10 +56,10 @@ const createPost = async (req, res) => {
 		const top = arr.reduce((a, b) => (a.score > b.score ? a : b), arr[0]);
 		const labelValue = top?.label ?? "";
 
-		let sentiment = "emotional";
+		let sentiment = "uncertain";
 		if (labelValue === "LABEL_2" || /positive/i.test(labelValue)) sentiment = "happy";
 		else if (labelValue === "LABEL_0" || /negative/i.test(labelValue)) sentiment = "sad";
-		else if (labelValue === "LABEL_1" || /neutral/i.test(labelValue)) sentiment = "emotional";
+		else if (labelValue === "LABEL_1" || /neutral/i.test(labelValue)) sentiment = "uncertain";
 
 		if (/angry|furious|mad|rage|outraged|enraged|irritated|pissed/i.test(text)) {
 			sentiment = "angry";
