@@ -43,7 +43,7 @@ const Post = ({ post, postedBy }) => {
           showToast("Error", data.error, "error");
           return;
         }
-        setSentiment(data.sentiment);  // Assuming sentiment is included in the post data from the backend
+        setSentiment(data.sentiment); 
       } catch (error) {
         showToast("Error", error.message, "error");
       }
@@ -126,7 +126,16 @@ const Post = ({ post, postedBy }) => {
                   {formatDistanceToNow(new Date(post.createdAt))} ago
                 </Text>
 
-                {currentUser?._id === user._id && <DeleteIcon size={20} onClick={() => setDeleteModalOpen(true)} />}
+                {currentUser?._id === user._id && (
+                  <DeleteIcon 
+                    size={20} 
+                    onClick={(e) => {
+                      e.preventDefault(); 
+                      e.stopPropagation();
+                      setDeleteModalOpen(true);
+                    }}
+                  />  
+                )}
               </Flex>
             </Flex>
 
@@ -149,7 +158,6 @@ const Post = ({ post, postedBy }) => {
         </Flex>
       </Link>
 
-      {/* Delete Post Modal */}
       <Modal isOpen={isDeleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
