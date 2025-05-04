@@ -32,35 +32,69 @@ const createPost = async (req, res) => {
 
 		const fetch = await import('node-fetch');
 		const HF_TOKEN = process.env.HUGGINGFACE_TOKEN;
-		const HF_URL = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment-latest";
+		const HF_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
+		// const HF_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
+
+		// const response = await fetch.default(HF_URL, {
+		// method: "POST",
+		// headers: {
+		// 	"Content-Type": "application/json",
+		// 	...(HF_TOKEN && { Authorization: `Bearer ${HF_TOKEN}` }),
+		// },
+		// body: JSON.stringify({ inputs: text }),
+		// });
+
+		// if (!response.ok) {
+		// 	const errorText = await response.text(); 
+		// 	throw new Error(`Hugging Face API error ${response.status}: ${errorText}`);
+		// }
+
+		// const result = await response.json();
+
+		// let arr = Array.isArray(result) ? result : result[0];
+		// if (Array.isArray(arr[0])) arr = arr[0];
+
+		// const top = arr.reduce((a, b) => (a.score > b.score ? a : b), arr[0]);
+		// const labelValue = top?.label ?? "";
+
+		// let sentiment = "uncertain";
+		// if (labelValue === "LABEL_2" || /positive/i.test(labelValue)) sentiment = "happy";
+		// else if (labelValue === "LABEL_0" || /negative/i.test(labelValue)) sentiment = "sad";
+		// else if (labelValue === "LABEL_1" || /neutral/i.test(labelValue)) sentiment = "uncertain";
+
+		// if (/angry|furious|mad|rage|outraged|enraged|irritated|pissed/i.test(text)) {
+		// 	sentiment = "angry";
+		// }
 
 		const response = await fetch.default(HF_URL, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...(HF_TOKEN && { Authorization: `Bearer ${HF_TOKEN}` }),
-		},
-		body: JSON.stringify({ inputs: text }),
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				...(HF_TOKEN && { Authorization: `Bearer ${HF_TOKEN}` }),
+			},
+			body: JSON.stringify({ inputs: text }),
 		});
-
+	
 		if (!response.ok) {
-			const errorText = await response.text(); 
-			throw new Error(`Hugging Face API error ${response.status}: ${errorText}`);
+			const errTxt = await response.text();
+			console.error("HuggingFace error:", errTxt);
+			throw new Error(`HuggingFace API error ${response.status}: ${errTxt}`);
 		}
-
+	
 		const result = await response.json();
-
+		console.log("HuggingFace API response:", result);
+	
 		let arr = Array.isArray(result) ? result : result[0];
 		if (Array.isArray(arr[0])) arr = arr[0];
-
+	
 		const top = arr.reduce((a, b) => (a.score > b.score ? a : b), arr[0]);
 		const labelValue = top?.label ?? "";
-
+	
 		let sentiment = "uncertain";
-		if (labelValue === "LABEL_2" || /positive/i.test(labelValue)) sentiment = "happy";
-		else if (labelValue === "LABEL_0" || /negative/i.test(labelValue)) sentiment = "sad";
-		else if (labelValue === "LABEL_1" || /neutral/i.test(labelValue)) sentiment = "uncertain";
-
+		if (/positive/i.test(labelValue)) sentiment = "happy";
+		else if (/negative/i.test(labelValue)) sentiment = "sad";
+		else if (/neutral/i.test(labelValue)) sentiment = "uncertain";
+	
 		if (/angry|furious|mad|rage|outraged|enraged|irritated|pissed/i.test(text)) {
 			sentiment = "angry";
 		}
