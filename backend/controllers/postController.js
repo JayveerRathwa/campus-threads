@@ -33,7 +33,7 @@ const createPost = async (req, res) => {
 		const fetch = await import('node-fetch');
 		const HF_TOKEN = process.env.HUGGINGFACE_TOKEN;
 		// const HF_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
-		const HF_URL = "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
+		const HF_URL = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment-latest";
 
 		const response = await fetch.default(HF_URL, {
 		method: "POST",
